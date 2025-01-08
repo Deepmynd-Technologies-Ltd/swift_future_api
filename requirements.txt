@@ -82,7 +82,7 @@ google-auth-httplib2==0.2.0
 google-pasta==0.2.0
 greenlet==3.0.3
 grpcio==1.65.4
-gunicorn==20.1.0
+gunicorn==22.0.0
 h11==0.14.0
 h5py==3.11.0
 hexbytes==1.2.1
