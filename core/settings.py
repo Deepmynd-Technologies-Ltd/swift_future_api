@@ -29,12 +29,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-el)2qm^py_=4itk)d056r7o*q8u^*s4tviow+ed+1mywa@xaig'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config("DEBUG", default=False, cast=bool)
+DEBUG = config("DEBUG", default=True, cast=bool)
 
-DEBUG=True
-ALLOWED_HOSTS=localhost
-CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173,http://127.0.0.1:3000,http://127.0.0.1:5173
-
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="localhost", cast=Csv())
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',
+    'http://127.0.0.1:8000',
+]
 
 # Application definition
 
@@ -104,11 +105,18 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 # SQLite Database
 DATABASES = {
-    'default': {
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL', 'sqlite:///db.sqlite3'),
+        conn_max_age=600
+    )
+}
+
+if DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
+    DATABASES['default'] = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
-}
+
 # MySQL Database
 # DATABASES = {
 #     'default': {
@@ -148,8 +156,8 @@ AUTHENTICATION_BACKENDS = [
 # AUTH_USER_MODEL = 'authentication.User'
 
 # For session handling with UUID
-# SESSION_ENGINE = 'django.contrib.sessions.backends.db'
-# SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
 
 # Internationalization
@@ -168,7 +176,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = "staticfiles"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 SITE_URL = "http://localhost:8000"
 
@@ -180,20 +188,20 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-# AUTH_USER_MODEL = 'authentication.User'
-GOOGLE_PASSWORD = config("GOOGLE_PASSWORD")
-GOOGLE_Client_ID = config("GOOGLE_Client_ID")
-INFURA = config("INFURA")
-ETH_API_KEY = config("ETHAPIKEY")
-BNB_API_KEY = config("BNBAPIKEY")
-BLOCK_CYPHER = config("BLOCKCYPHER")
-# AUTHTOKEN=config("AUTHTOKEN")
+AUTH_USER_MODEL = 'authentication.User'
+GOOGLE_PASSWORD = config("GOOGLE_PASSWORD", default="")
+GOOGLE_Client_ID = config("GOOGLE_Client_ID", default="")
+INFURA = config("INFURA", default="")
+ETH_API_KEY = config("ETHAPIKEY", default="")
+BNB_API_KEY = config("BNBAPIKEY", default="")
+BLOCK_CYPHER = config("BLOCKCYPHER", default="")
+AUTHTOKEN=config("AUTHTOKEN", default="")
 
 HASHKEY= "iDl7OxifWIlVFWfH7MISNyy9g3dWNqPPuwuV1WpVZvI="
-if DEBUG:
-    PAYBIS_KEY = config("PAYBIS_TEST_CRYPT")
-else:
-    PAYBIS_KEY = config("PAYBIS_PROD_CRYPT")
+# if DEBUG:
+#     PAYBIS_KEY = config("PAYBIS_TEST_CRYPT")
+# else:
+#     PAYBIS_KEY = config("PAYBIS_PROD_CRYPT")
 
 NINJA_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
@@ -202,8 +210,8 @@ NINJA_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
     'UPDATE_LAST_LOGIN': True,
 
-    'ALGORITHM': config("ALGORITHM"),
-    'SIGNING_KEY': config("SECRETE_KEY"),
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': config("SECRET_KEY"),
     'VERIFYING_KEY': None,
     'AUDIENCE': None,
     'ISSUER': None,

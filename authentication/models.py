@@ -4,6 +4,8 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, Group
 from django.utils.translation import gettext_lazy as _
 from authentication.manager import AccountManagement
 from django.contrib.auth.hashers import make_password
+from django.db.models.signals import post_migrate
+from django.dispatch import receiver
 
 class User(AbstractBaseUser, PermissionsMixin):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -36,3 +38,14 @@ class User(AbstractBaseUser, PermissionsMixin):
         if not self.password.startswith('pbkdf2_') and not self._state.adding:
             self.password = make_password(self.password)
         super().save(*args, **kwargs)
+
+    @receiver(post_migrate)
+    def ensure_uuid_for_users(sender, **kwargs):
+        import uuid
+        from authentication.models import User
+
+        for user in User.objects.all():
+            if not isinstance(user.id, uuid.UUID):
+                user.id = uuid.uuid4()
+                user.save()
+
