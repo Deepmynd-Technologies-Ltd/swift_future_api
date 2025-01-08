@@ -1,6 +1,7 @@
 #!/bin/sh
 
 set -o errexit
+apt-get update && apt-get install -y libsystemd-dev pkg-config
 pip install -r requirements.txt
 python manage.py makemigrations
 python manage.py migrate
