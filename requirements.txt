@@ -16,7 +16,7 @@ base58==2.1.1
 bcrypt==4.2.0
 bip-utils==2.9.3
 bitarray==3.0.0
-bitcoin==1.1.42
+# bitcoin==1.1.42
 bitcoinlib==0.7.1
 blinker==1.8.2
 blockcypher==1.0.93
