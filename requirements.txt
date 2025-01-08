@@ -32,7 +32,7 @@ coincurve==20.0.0
 # construct==2.10.68
 construct-typing==0.5.6
 contextlib2==21.6.0
-crcmod==1.7
+# crcmod==1.7
 cryptography==43.0.1
 cytoolz==1.0.1
 dbus-python==1.2.18
