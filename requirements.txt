@@ -130,3 +130,4 @@ wrapt==1.17.0
 xrpl-py==4.0.0
 yarg==0.1.9
 yarl==1.18.3
+pycoingecko==3.0.0
