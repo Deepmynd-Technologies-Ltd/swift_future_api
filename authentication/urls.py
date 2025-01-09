@@ -5,7 +5,7 @@ from ninja import NinjaAPI
 from .views import auth_router
 from wallet.views import wallet_router
 from webhook.views import webhook
-from ninja_jwt.authentication import JWTAuth
+# from ninja_jwt.authentication import JWTAuth
 from django.contrib.admin.views.decorators import staff_member_required
 
 api = NinjaAPI()
